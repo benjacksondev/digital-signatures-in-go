@@ -1,0 +1,19 @@
+sequenceDiagram
+    participant User
+    participant CertLoader as "Certificate Loader"
+    participant IssuerLoader as "Issuer Certificate Loader"
+    participant ASN1Parser as "ASN.1 Parser"
+    participant HashCalculator as "SHA256 Hasher"
+    participant SignatureVerifier as "Signature Verifier"
+
+    User->>CertLoader: Load leaf certificate (cert.pem)
+    CertLoader-->>User: Return leaf cert bytes
+    User->>IssuerLoader: Load issuer certificate (issuer.pem)
+    IssuerLoader-->>User: Return issuer cert bytes
+    User->>ASN1Parser: Parse leaf cert ASN.1 structure
+    ASN1Parser-->>User: Extract tbsCertificate, signature
+    User->>HashCalculator: Compute SHA256 hash of tbsCertificate
+    HashCalculator-->>User: Return hashed value
+    User->>SignatureVerifier: Verify signature using issuer public key
+    SignatureVerifier-->>User: Return verification result (valid/invalid)
+
